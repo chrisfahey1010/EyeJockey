@@ -50,8 +50,7 @@ function handleAudio(pcm: Float32Array) {
   (postMessage as (message: AudioFeatures) => void)(out);
 }
 
-// eslint-disable-next-line no-restricted-globals
-self.onmessage = (e: MessageEvent<InitMsg | AudioMsg>) => {
+onmessage = (e: MessageEvent<InitMsg | AudioMsg>) => {
   const data = e.data;
   if (data.type === 'init') {
     sampleRate = data.sampleRate;

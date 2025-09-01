@@ -2,11 +2,10 @@ export type MidiMapping = {
   ccToParam: Record<number, string>; // CC number -> param key
 };
 
-type MidiInputLike = { onmidimessage: ((e: { data: Uint8Array }) => void) | null };
-type MidiAccessLike = {
-  inputs: Map<string, MidiInputLike> | { forEach: (cb: (input: MidiInputLike) => void) => void };
-  onstatechange?: () => void;
-};
+type MidiMessageEventLike = { data: Uint8Array };
+type MidiInputLike = { onmidimessage: ((e: MidiMessageEventLike) => void) | null };
+type MidiInputMapLike = { forEach(cb: (input: MidiInputLike, key: string) => void): void } | Map<string, MidiInputLike>;
+type MidiAccessLike = { inputs: MidiInputMapLike; onstatechange?: (() => void) | null };
 
 export class MidiManager {
   private access: MidiAccessLike | null = null;
@@ -21,7 +20,7 @@ export class MidiManager {
     if (!('requestMIDIAccess' in navigator)) return;
     const navWithMidi = navigator as Navigator & { requestMIDIAccess?: (opts: { sysex: boolean }) => Promise<MidiAccessLike> };
     if (!navWithMidi.requestMIDIAccess) return;
-    this.access = await navWithMidi.requestMIDIAccess({ sysex: false });
+    this.access = await navWithMidi.requestMIDIAccess({ sysex: false }) as unknown as MidiAccessLike;
     this.attach();
   }
 
@@ -34,17 +33,17 @@ export class MidiManager {
     const inputs = this.access.inputs;
     if (inputs instanceof Map) {
       inputs.forEach((input) => {
-        input.onmidimessage = (e: { data: Uint8Array }) => this.handleMessage(e);
+        input.onmidimessage = (e: MidiMessageEventLike) => this.handleMessage(e);
       });
-    } else if (typeof (inputs as { forEach: unknown }).forEach === 'function') {
-      (inputs as { forEach: (cb: (input: MidiInputLike) => void) => void }).forEach((input) => {
-        input.onmidimessage = (e: { data: Uint8Array }) => this.handleMessage(e);
+    } else {
+      (inputs as { forEach(cb: (input: MidiInputLike, key: string) => void): void }).forEach((input) => {
+        input.onmidimessage = (e: MidiMessageEventLike) => this.handleMessage(e);
       });
     }
     this.access.onstatechange = () => this.attach();
   }
 
-  private handleMessage(e: { data: Uint8Array }) {
+  private handleMessage(e: MidiMessageEventLike) {
     const [status, data1, data2] = e.data as unknown as [number, number, number];
     const isCC = (status & 0xf0) === 0xb0;
     if (!isCC) return;
