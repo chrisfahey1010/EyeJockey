@@ -50,14 +50,18 @@ export default function ControlPanel({ onStartMic, onStartSystem, onStopAudio, s
       </div>
 
       <div className="mb-4">
-        <label className="mb-2 block text-sm font-medium">Speed: {speed.toFixed(2)}</label>
+        <label className="mb-2 block text-sm font-medium">Speed: {Math.round(((speed - 0.15) / (0.3 - 0.15)) * 100)}%</label>
         <input
           type="range"
           min={0}
-          max={2}
-          step={0.01}
-          value={speed}
-          onChange={(e) => setSpeed(parseFloat(e.target.value))}
+          max={100}
+          step={1}
+          value={Math.round(((speed - 0.15) / (0.3 - 0.15)) * 100)}
+          onChange={(e) => {
+            const pct = parseInt(e.target.value, 10);
+            const mapped = 0.15 + (0.3 - 0.15) * (pct / 100);
+            setSpeed(mapped);
+          }}
           className="w-full accent-gray-900"
         />
       </div>

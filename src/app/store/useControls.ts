@@ -24,7 +24,7 @@ export const useControls = create<ControlsState>((set) => ({
   bpm: 120,
   playing: false,
 
-  speed: 1.0,
+  speed: 0.15,
   distortion: 0.35,
   colorShift: 0.5,
   audioGain: 1.0,

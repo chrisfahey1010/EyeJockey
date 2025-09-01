@@ -136,7 +136,7 @@ export const orbPack: VisualPack = {
   name: 'Tempo Orb',
   version: '0.1.0',
   uniforms: [
-    { name: 'speed', type: 'float', min: 0, max: 2, default: 1 },
+    { name: 'speed', type: 'float', min: 0.15, max: 0.3, default: 0.15 },
     { name: 'colorShift', type: 'float', min: 0, max: 1, default: 0.5 },
     { name: 'audioGain', type: 'float', min: 0, max: 4, default: 1 },
   ],
