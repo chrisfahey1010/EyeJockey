@@ -47,11 +47,10 @@ function handleAudio(pcm: Float32Array) {
     centroid: features.centroid,
     bands: features.bands,
   };
-  // @ts-ignore
-  postMessage(out);
+  (postMessage as (message: AudioFeatures) => void)(out);
 }
 
-// @ts-ignore
+// eslint-disable-next-line no-restricted-globals
 self.onmessage = (e: MessageEvent<InitMsg | AudioMsg>) => {
   const data = e.data;
   if (data.type === 'init') {

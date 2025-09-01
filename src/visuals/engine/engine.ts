@@ -26,7 +26,8 @@ export class VisualEngine {
     container.appendChild(this.renderer.domElement);
 
     // expose for packs that rely on scene lookup (MVP)
-    (globalThis as unknown as { __ej_scene?: THREE.Scene }).__ej_scene = this.scene;
+    const g = globalThis as unknown as { __ej_scene?: THREE.Scene };
+    g.__ej_scene = this.scene;
 
     this.clock = new THREE.Clock();
     this.pack = opts.pack;

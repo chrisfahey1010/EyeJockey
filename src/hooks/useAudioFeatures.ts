@@ -30,7 +30,10 @@ export function useAudioFeatures() {
   const start = useCallback(async () => {
     if (ctxRef.current) return;
     const stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: false } });
-    const AC: typeof AudioContext = (window as any).AudioContext || (window as any).webkitAudioContext;
+    type WebAudioConstructors = { AudioContext?: typeof AudioContext; webkitAudioContext?: typeof AudioContext };
+    const w = window as typeof window & WebAudioConstructors;
+    const AC = w.AudioContext ?? w.webkitAudioContext;
+    if (!AC) return; // WebAudio not supported
     const ctx = new AC();
     ctxRef.current = ctx;
     const src = ctx.createMediaStreamSource(stream);

@@ -19,7 +19,9 @@ export class MidiManager {
 
   async init() {
     if (!('requestMIDIAccess' in navigator)) return;
-    this.access = (await (navigator as unknown as { requestMIDIAccess: (opts: { sysex: boolean }) => Promise<MidiAccessLike> }).requestMIDIAccess({ sysex: false })) as MidiAccessLike;
+    const navWithMidi = navigator as Navigator & { requestMIDIAccess?: (opts: { sysex: boolean }) => Promise<MidiAccessLike> };
+    if (!navWithMidi.requestMIDIAccess) return;
+    this.access = await navWithMidi.requestMIDIAccess({ sysex: false });
     this.attach();
   }
 
