@@ -13,7 +13,7 @@ export class VisualEngine {
   private clock: THREE.Clock;
   private running = false;
   private pack: VisualPack;
-  private params: Record<string, any> = {};
+  private params: Record<string, unknown> = {};
   private audio: FeatureVector = { level: 0, peak: 0 };
 
   constructor(private opts: EngineOptions) {
@@ -42,7 +42,7 @@ export class VisualEngine {
     window.addEventListener('resize', this.handleResize);
   }
 
-  setParams(params: Record<string, any>) {
+  setParams(params: Record<string, unknown>) {
     this.params = params;
   }
 

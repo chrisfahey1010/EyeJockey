@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { VisualPack, FeatureVector } from '@/visuals/core/types';
+type TunnelParams = { speed?: number; distortion?: number; colorShift?: number; audioGain?: number };
 
 const fragmentShader = /* glsl */ `
 precision highp float;
@@ -66,7 +67,7 @@ export const tunnelPack: VisualPack = {
     mesh.name = 'tunnelMesh';
     scene.add(mesh);
   },
-  update: (dt: number, t: number, audio: FeatureVector, params: Record<string, unknown>) => {
+  update: (dt: number, t: number, audio: FeatureVector, params: TunnelParams) => {
     // find our mesh by name within the scene reference stored at init time
     // this relies on the engine exposing the scene globally for MVP; later, packs receive refs
     const sceneRef = (globalThis as unknown as { __ej_scene?: THREE.Scene }).__ej_scene;
@@ -75,10 +76,10 @@ export const tunnelPack: VisualPack = {
     if (!mesh) return;
     const m = mesh.material as THREE.ShaderMaterial;
     m.uniforms.uTime.value = t;
-    m.uniforms.uSpeed.value = (params as any).speed ?? 1;
-    m.uniforms.uDistortion.value = (params as any).distortion ?? 0.35;
-    m.uniforms.uColorShift.value = (params as any).colorShift ?? 0.5;
-    const audioVal = (audio?.level ?? 0) * ((params as any).audioGain ?? 1);
+    m.uniforms.uSpeed.value = params.speed ?? 1;
+    m.uniforms.uDistortion.value = params.distortion ?? 0.35;
+    m.uniforms.uColorShift.value = params.colorShift ?? 0.5;
+    const audioVal = (audio?.level ?? 0) * (params.audioGain ?? 1);
     m.uniforms.uAudio.value = audioVal;
   },
   dispose: () => {},

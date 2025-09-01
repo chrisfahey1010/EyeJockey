@@ -30,7 +30,7 @@ function computeRms(buf: Float32Array): number {
   return Math.sqrt(sum / Math.max(1, buf.length));
 }
 
-function computeBandsAndCentroid(buf: Float32Array): { bands: AudioFeatures['bands']; centroid: number } {
+function computeBandsAndCentroid(_buf: Float32Array): { bands: AudioFeatures['bands']; centroid: number } {
   // Simple FFT via power-of-two radix-2 is omitted for brevity; estimate using zero-crossings heuristic
   // Placeholder: return no-op bands but still provide structure
   return { bands: { low: 0.3, mid: 0.3, high: 0.3 }, centroid: 0 };

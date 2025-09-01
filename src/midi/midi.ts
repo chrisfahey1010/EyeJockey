@@ -31,13 +31,13 @@ export class MidiManager {
 
   private attach() {
     if (!this.access) return;
-    const inputs = this.access.inputs as any;
-    if (inputs && typeof inputs.forEach === 'function') {
-      inputs.forEach((input: MidiInputLike) => {
+    const inputs = this.access.inputs;
+    if (inputs instanceof Map) {
+      inputs.forEach((input) => {
         input.onmidimessage = (e: { data: Uint8Array }) => this.handleMessage(e);
       });
-    } else if (inputs instanceof Map) {
-      (inputs as Map<string, MidiInputLike>).forEach((input) => {
+    } else if (typeof (inputs as { forEach: unknown }).forEach === 'function') {
+      (inputs as { forEach: (cb: (input: MidiInputLike) => void) => void }).forEach((input) => {
         input.onmidimessage = (e: { data: Uint8Array }) => this.handleMessage(e);
       });
     }
