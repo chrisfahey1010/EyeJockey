@@ -28,7 +28,7 @@ export type VisualPack = {
     renderer: THREE.WebGLRenderer;
     size: { w: number; h: number };
   }) => void | Promise<void>;
-  update: (dt: number, t: number, audio: FeatureVector, params: Record<string, any>) => void;
+  update: (dt: number, t: number, audio: FeatureVector, params: Record<string, unknown>) => void;
   dispose?: () => void;
 };
 

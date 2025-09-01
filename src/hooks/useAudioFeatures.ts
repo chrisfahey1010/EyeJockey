@@ -30,7 +30,8 @@ export function useAudioFeatures() {
   const start = useCallback(async () => {
     if (ctxRef.current) return;
     const stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: false } });
-    const ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
+    const AC: typeof AudioContext = (window as any).AudioContext || (window as any).webkitAudioContext;
+    const ctx = new AC();
     ctxRef.current = ctx;
     const src = ctx.createMediaStreamSource(stream);
     const analyser = ctx.createAnalyser();

@@ -43,10 +43,6 @@ function FpsHud() {
   );
 }
 
-function DemoScene() {
-  return null;
-}
-
 export default function VisualPage() {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const engineRef = useRef<VisualEngine | null>(null);
@@ -71,7 +67,7 @@ export default function VisualPage() {
     setStarted(true);
     startAudio().catch(() => {});
     return () => engine.dispose();
-  }, []);
+  }, [startAudio]);
 
   // push params into engine when they change
   useEffect(() => {
