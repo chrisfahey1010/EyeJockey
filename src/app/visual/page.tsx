@@ -2,7 +2,8 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { VisualEngine } from '@/visuals/engine/engine';
-import tunnelPack from '@/visuals/packs/tunnel';
+// Switch default visual pack to orb for smoother look
+import orbPack from '@/visuals/packs/orb';
 import { useAudioFeatures } from '@/hooks/useAudioFeatures';
 import { useControls } from '@/app/store/useControls';
 import { useShallow } from 'zustand/react/shallow';
@@ -61,7 +62,7 @@ export default function VisualPage() {
   useEffect(() => {
     const el = containerRef.current;
     if (!el) return;
-    const engine = new VisualEngine({ container: el, pack: tunnelPack });
+    const engine = new VisualEngine({ container: el, pack: orbPack });
     engineRef.current = engine;
     engine.start();
     setStarted(true);
