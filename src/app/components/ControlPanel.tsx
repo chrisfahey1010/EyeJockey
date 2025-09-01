@@ -2,7 +2,14 @@
 
 import { useControls } from '@/app/store/useControls';
 
-export default function ControlPanel() {
+type Props = {
+  onStartMic?: () => void;
+  onStartSystem?: () => void;
+  onStopAudio?: () => void;
+  source?: 'none' | 'mic' | 'system';
+};
+
+export default function ControlPanel({ onStartMic, onStartSystem, onStopAudio, source = 'none' }: Props) {
   const {
     bpm,
     setBpm,
@@ -21,6 +28,14 @@ export default function ControlPanel() {
   return (
     <div className="mx-auto max-w-md rounded-2xl border p-6 shadow-sm bg-white/80">
       <h2 className="mb-4 text-xl font-semibold">Control Panel</h2>
+
+      <div className="mb-4 flex items-center gap-2 text-sm">
+        <span className="text-gray-700">Audio:</span>
+        <button onClick={onStartMic} className={`rounded px-3 py-1 ${source === 'mic' ? 'bg-gray-900 text-white' : 'bg-gray-100'}`}>Mic</button>
+        <button onClick={onStartSystem} className={`rounded px-3 py-1 ${source === 'system' ? 'bg-gray-900 text-white' : 'bg-gray-100'}`}>System</button>
+        <button onClick={onStopAudio} className="rounded px-3 py-1 bg-gray-100">Stop</button>
+        <span className="ml-auto text-gray-600">{source === 'none' ? 'Idle' : source === 'mic' ? 'Mic' : 'System'}</span>
+      </div>
 
       <div className="mb-4">
         <label className="mb-2 block text-sm font-medium">BPM: {bpm}</label>

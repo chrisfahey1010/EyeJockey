@@ -48,7 +48,7 @@ export default function VisualPage() {
   const engineRef = useRef<VisualEngine | null>(null);
   const [started, setStarted] = useState(false);
   const [panelOpen, setPanelOpen] = useState(true);
-  const { features, start: startAudio } = useAudioFeatures();
+  const { features, source, startMic, startSystem, stop } = useAudioFeatures();
   const { speed, distortion, colorShift, audioGain } = useControls(
     useShallow((s) => ({
       speed: s.speed,
@@ -65,16 +65,19 @@ export default function VisualPage() {
     engineRef.current = engine;
     engine.start();
     setStarted(true);
-    startAudio().catch(() => {});
     return () => engine.dispose();
-  }, [startAudio]);
+  }, []);
 
   // push params into engine when they change
   useEffect(() => {
     const engine = engineRef.current;
     if (!engine) return;
-    engine.setParams({ speed, distortion, colorShift, audioGain });
-  }, [speed, distortion, colorShift, audioGain]);
+    // Idle: very slow movement when no audio. When audio present, scale by level
+    const intensity = Math.min(1, Math.max(0, features.level || 0));
+    const dynamicSpeed = (source === 'none' ? 0.1 : 0.4 + intensity * 1.6) * speed;
+    const dynamicDistortion = (source === 'none' ? 0.1 : 0.2 + intensity * 0.8) * distortion;
+    engine.setParams({ speed: dynamicSpeed, distortion: dynamicDistortion, colorShift, audioGain });
+  }, [speed, distortion, colorShift, audioGain, source, features.level]);
 
   useEffect(() => {
     const engine = engineRef.current;
@@ -96,7 +99,7 @@ export default function VisualPage() {
             >
               ×
             </button>
-            <ControlPanel />
+            <ControlPanel onStartMic={startMic} onStartSystem={startSystem} onStopAudio={stop} source={source} />
           </div>
         </div>
       ) : (
